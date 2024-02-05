@@ -5,20 +5,14 @@ class Products {
   static async create(req, res) {
     try {
       const { body } = req;
-
-      // Determina si el cuerpo tiene ciertos campos específicos de un mensaje de autorización
-      const isAuthorizationMessage =
-        'amount' in body && '3ds' in body && 'fees' in body;
-
       console.log(body);
 
       let newEntity;
 
-      if (isAuthorizationMessage) {
+      if ('amount' in body && '3ds' in body && 'fees' in body) {
         // Si el cuerpo parece ser un mensaje de autorización, crea una instancia del modelo 'AuthorizationMessage'
         newEntity = new AuthorizationMessage(body);
-      } else {
-        // De lo contrario, asume que es un producto y crea una instancia del modelo 'Product'
+      } else if ('forApproval' in body && 'productShortDesc' in body) {
         newEntity = new Product(body);
       }
 
