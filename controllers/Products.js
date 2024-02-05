@@ -1,21 +1,33 @@
 const Product = require('../models/productModel');
+const AuthorizationMessage = require('../models/GB/AuthorizationMessage');
 
 class Products {
   static async create(req, res) {
     try {
       const { body } = req;
 
-      const productData = body;
+      // Determina si el cuerpo tiene ciertos campos específicos de un mensaje de autorización
+      const isAuthorizationMessage =
+        'amount' in body && '3ds' in body && 'fees' in body;
 
-      // Crea una nueva instancia del modelo 'Product' con los datos del cuerpo
-      const newProduct = new Product(productData);
+      console.log(body);
 
-      // Guarda el nuevo producto en la base de datos MongoDB
-      await newProduct.save();
+      let newEntity;
 
-      res.status(201).json({ message: 'Producto creado exitosamente' });
+      if (isAuthorizationMessage) {
+        // Si el cuerpo parece ser un mensaje de autorización, crea una instancia del modelo 'AuthorizationMessage'
+        newEntity = new AuthorizationMessage(body);
+      } else {
+        // De lo contrario, asume que es un producto y crea una instancia del modelo 'Product'
+        newEntity = new Product(body);
+      }
+
+      // Guarda la nueva entidad en la base de datos MongoDB
+      await newEntity.save();
+
+      res.status(201).json({ message: 'Entidad creada exitosamente' });
     } catch (error) {
-      console.error('Error al crear el producto:', error);
+      console.error('Error al crear la entidad:', error);
       res.status(500).json({ error: 'Error interno del servidor' });
     }
   }
