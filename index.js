@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('./db/db');
 const createProdRouter = require('./routes/createProduct');
+const authorizationMessage = require('./routes/authorizationMessage');
 
 class YourMarketApp {
   static initializeMiddleware(app) {
@@ -9,7 +10,8 @@ class YourMarketApp {
 
   //Routes of this aplication
   static initializeRoutes(app) {
-    app.use('/products/youmarket', createProdRouter);
+    app.use('/products/ym', createProdRouter);
+    app.use('/authorization/gb', authorizationMessage);
   }
   //listen server
 
@@ -17,9 +19,17 @@ class YourMarketApp {
     const app = express();
     const port = 3004;
 
-    YourMarketApp.initializeMiddleware(app);
-    YourMarketApp.initializeRoutes(app);
+    //ESCUCHA EN EL PUERTO QUE SE LE PROPORCIONE
+    YourMarketApp.listener(app, port);
 
+    //PERMITE LEER LOS JSON
+    YourMarketApp.initializeMiddleware(app);
+
+    //ACA SE INICIALIZAN LAS RUTAS
+    YourMarketApp.initializeRoutes(app);
+  }
+
+  static listener(app, port) {
     app.listen(port, () => {
       console.log(`Example app listening on port ${port}`);
     });

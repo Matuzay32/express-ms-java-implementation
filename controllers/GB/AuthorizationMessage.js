@@ -1,12 +1,12 @@
-const Product = require('../models/productModel');
+const authorizationMessage = require('../../models/GB/AuthorizationMessage');
 
-class Products {
-  //YM CREATE EXAMPLE PRODUCT IN DB
+class AuthorizationMessage {
+  //GB AuthorizationMessage
   static async create(req, res) {
     try {
       const { body } = req;
 
-      let newEntity = new Product(body);
+      let newEntity = new authorizationMessage(body);
 
       // Guarda la nueva entidad en la base de datos MongoDB
       await newEntity.save();
@@ -19,4 +19,4 @@ class Products {
   }
 }
 
-module.exports = Products;
+module.exports = AuthorizationMessage;
